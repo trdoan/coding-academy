@@ -8,7 +8,32 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator nestgraphql {
+  provider = "prisma-nestjs-graphql"
+  output   = "../@types"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String @id @default(uuid())
+  email       String @unique
+  displayName String
+
+  /// @HideField({output: true})
+  password String
+
+  /// @HideField({input: true})
+  activedAt DateTime?
+  /// @HideField({input: true})
+  createdAt DateTime  @default(now())
+  /// @HideField({input: true})
+  deletedAt DateTime?
+  /// @HideField({input: true})
+  updatedAt DateTime  @updatedAt
+  /// @HideField({input: true})
+  lockedAt  DateTime?
 }
