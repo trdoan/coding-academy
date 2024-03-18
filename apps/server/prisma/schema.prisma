@@ -8,7 +8,39 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Checkout: https://www.npmjs.com/package/prisma-nestjs-graphql
+generator nestgraphql {
+  provider    = "prisma-nestjs-graphql"
+  output      = "../src/@types"
+  // delete all files in output then replace it
+  purgeOutput = true
+  // re-export in index.ts to decrease mutilple import in dev env
+  reExport    = All
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  /// @HideField({ match: '@(User)Create*Input' })
+  id String @id @default(uuid())
+
+  email       String @unique
+  displayName String
+
+  /// @HideField({output: true})
+  password String
+
+  /// @HideField({input: true})
+  activedAt DateTime?
+  /// @HideField({input: true})
+  createdAt DateTime  @default(now())
+  /// @HideField({input: true})
+  deletedAt DateTime?
+  /// @HideField({input: true})
+  updatedAt DateTime  @updatedAt
+  /// @HideField({input: true})
+  lockedAt  DateTime?
 }
